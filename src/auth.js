@@ -10,7 +10,7 @@ const config = {
     storageBucket: "bogsynth.appspot.com",
     messagingSenderId: "359303561397",
     appId: "1:359303561397:web:2d73a7613b08ebd2"
-  };
+};
 
 const auth = {
   context: null,
