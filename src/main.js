@@ -1,12 +1,21 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Vue from 'vue/dist/vue.js'
+
+import App from '@/App'
+
+import {router} from '@/router'
+import {store} from '@/store'
+import auth from '@/auth'
 
 Vue.config.productionTip = false
 
+/* eslint-disable no-new */
 new Vue({
-  router,
+  el: '#app',
   store,
-  render: h => h(App)
-}).$mount('#app')
+  router,
+  beforeCreate () {
+    auth.init(this)
+  },
+  template: '<App/>',
+  components: { App }
+})

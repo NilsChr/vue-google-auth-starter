@@ -1,29 +1,29 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue/dist/vue.js'
+import Router from 'vue-router'
+import auth from '@/auth'
 
-Vue.use(VueRouter)
+import Auth from '@/views/Auth'
+import Dashboard from '@/views/Dashboard'
 
-  const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+Vue.use(Router)
+
+var routes = [
+  { path: '/auth', name: 'auth', component: Auth, meta: { guestOnly: true } },
+  { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requireAuth: true } },
+  { path: '*', redirect: '/auth' }
 ]
 
-const router = new VueRouter({
+export const router = new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes
 })
 
-export default router
+router.beforeEach((to, from, next) => {
+  let currentUser = auth.user()
+  let requireAuth = to.matched.some(record => record.meta.requireAuth)
+  let guestOnly = to.matched.some(record => record.meta.guestOnly)
+
+  if (requireAuth && !currentUser) next('auth')
+  else if (guestOnly && currentUser) next('dashboard')
+  else next()
+})
